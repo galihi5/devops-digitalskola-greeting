@@ -1,0 +1,66 @@
+services:
+  db:    
+    image: postgres:17.2
+    container_name: pg-greeting
+    #restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    #this port not exposed
+    ports:
+      - "5433:5432"
+    volumes:
+      - E:\Documents\Projects\DevOps\greeting\db:/var/lib/postgresql/data
+    networks:
+      - greeting_network
+      
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-greeting
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    #this port not exposed
+    ports:
+      - "5050:80"    
+    depends_on:
+      - db
+    volumes:
+      - E:\Documents\Projects\DevOps\greeting\pgadmin:/var/lib/pgadmin
+    networks:
+      - greeting_network
+      
+  backend:
+    build:
+      context: ./backend
+    container_name: springboot-greeting
+    env_file:
+      - .env
+    ports:
+      - "8081:8081" # Expose Spring Boot app to host
+    depends_on:
+      - db
+    volumes:
+      - E:\Documents\Projects\DevOps\greeting\backend:/app/logs # Persist logs
+    networks:
+      - greeting_network
+  
+  nginx:
+    image: nginx:latest
+    container_name: nginx-greeting
+    depends_on:
+      - pgadmin
+      - backend
+    volumes:
+      - E:\Documents\Projects\DevOps\greeting\proxy\default.conf:/etc/nginx/conf.d/default.conf
+      - E:\Documents\Projects\DevOps\greeting\proxy\log:/var/log/nginx
+    ports:
+      - "8080:80"
+    networks:
+      - greeting_network
+  
+networks:
+  greeting_network:
+    driver: bridge
+    name: greeting_network
