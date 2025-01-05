@@ -2,7 +2,7 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY greeting/target/greeting-0.0.1.jar /app/app.jar
+COPY greeting/greeting-0.0.1.jar /app/app.jar
 
 EXPOSE 8081
 

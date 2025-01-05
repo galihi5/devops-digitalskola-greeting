@@ -7,9 +7,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    #this port not exposed
-    ports:
-      - "5433:5432"
+    #this port no need to exposed
+    #ports:
+    #  - "5433:5432"
     volumes:
       - E:\Documents\Projects\DevOps\greeting\db:/var/lib/postgresql/data
     networks:
@@ -21,9 +21,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    #this port not exposed
-    ports:
-      - "5050:80"    
+    #this port no need to exposed
+    #ports:
+    #  - "5050:80"    
     depends_on:
       - db
     volumes:
@@ -37,8 +37,9 @@ services:
     container_name: springboot-greeting
     env_file:
       - .env
-    ports:
-      - "8081:8081" # Expose Spring Boot app to host
+    #this port no need to exposed
+    #ports:
+    #  - "8081:8081" # Expose Spring Boot app to host
     depends_on:
       - db
     volumes:
